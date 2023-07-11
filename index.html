@@ -1,0 +1,29 @@
+<!-- Site to host latest soccer videos -->
+<!-- json-server --watch data/db.json : Watch the database --> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
+  <title>Soccer Highlights</title>
+</head>
+<body>
+    <!-- Selecting Options for League -->
+    <div class="select-container">
+        <form action="#" class="select-form">
+            <label id="select-text" for="league-select">Footy Highlight Videos</label>
+            <select name="Leagues" class="league-select">
+                <option value="select">Select a League</option>
+            </select>
+            <input type="submit" value="Submit" class="select-submit-button"/>
+    </form>
+    </div>
+
+    <!-- This will hold the videos -->
+    <div class="video-container">
+
+    </div>
+    <script type='text/javascript' src='js/config.js'></script>
+    <script src="js/index.js"></script>
+</body>
+</html>
