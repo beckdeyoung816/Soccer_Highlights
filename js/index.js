@@ -5,7 +5,7 @@ const league_selector = document.querySelector('.league-select');
 const league_select_button = document.querySelector('.select-submit-button');
 
 const get_data = async () => {
-    console.log(config.API_KEY)
+    // Get data from the server
     const url = 'https://free-football-soccer-videos.p.rapidapi.com/';
     const options = {
         method: 'GET',
@@ -15,31 +15,15 @@ const get_data = async () => {
         }
     };
     
-    try {
-        const response = await fetch(url, options);
-        const result = await response.json();
-        const json = JSON.stringify(result)
-        // console.log(json);
-        // post_text(json);
-
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-const post_data = async (data) => {
-    await fetch('http://localhost:3000/videos', {
-        method: 'POST',
-        body: data,
-        headers: { 'Content-Type': 'application/json' }
-    });
+    // Fetch and await the response
+    const response = await fetch(url, options);
+    const result = await response.json();
+    return result;
 }
 
 const get_unique_leagues = async () => {
     // Get unique leagues from videos on the server
-    const uri = 'http://localhost:3000/videos';
-    const response = await fetch(uri);
-    const videos = await response.json();
+    const videos = await get_data();
     // Get all leagues
     const leagues = videos.map(video => video.competition.name);
     // Get unique leagues
@@ -63,9 +47,7 @@ const display_leagues = async (leagues) => {
 
 const display_videos = async (league) => {
     // Get videos from the server
-    const uri = 'http://localhost:3000/videos';
-    const response = await fetch(uri);
-    const videos = await response.json();
+    const videos = await get_data();
     // Filter videos by league
     const league_videos = videos.filter(video => video.competition.name === league);
 
@@ -92,35 +74,17 @@ const display_videos = async (league) => {
 }
 
 // When the page loads, get the data from the API
-window.addEventListener('DOMContentLoaded', () => get_data());
+window.addEventListener('DOMContentLoaded', () => {
+    // Get the unique leagues from the server and display them in the league selector
+    const unique_leagues_promise = get_unique_leagues();
+    display_leagues(unique_leagues_promise);
+});
 
-// Get the unique leagues from the server and display them in the league selector
-const unique_leagues_promise = get_unique_leagues();
-display_leagues(unique_leagues_promise);
 
 // When the user selects a league, display the videos for that league
 league_select_button.addEventListener('click', (e) => {
+    // Default is page refresh
     e.preventDefault();
-    video_container.innerHTML = '';
-    display_videos(league_selector.value);
+    video_container.innerHTML = ''; // Clear the video container
+    display_videos(league_selector.value); // Display the videos for the selected league
 });
-
-// const post_data = async (data) => {
-//     // Fetch existing videos from the server
-//   const response = await fetch('http://localhost:3000/videos');
-//   const existingVideos = await response.json();
-
-//   // Filter out new videos that have not been posted before
-//   const newVideos = data.filter((video) => {
-//       return !existingVideos.some((existingVideo) => existingVideo.id === video.id);
-//   });
-
-
-//   await Promise.all(newVideos.map(async (video) => {
-//     await fetch('http://localhost:3000/videos', {
-//       method: 'POST',
-//       body: JSON.stringify(video),
-//       headers: { 'Content-Type': 'application/json' }
-//     });
-//   }));
-// };
